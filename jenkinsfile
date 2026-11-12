@@ -1,0 +1,46 @@
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat 'python -m pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run the Application') {
+            steps {
+                bat 'python app.py'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'python -m pytest'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                bat 'python -m compileall .'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Jenkins CI-CD successful'
+        }
+
+        failure {
+            echo 'Jenkins CI-CD failed'
+        }
+    }
+}
